@@ -1,6 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 require('dotenv').config()
+const ObjectId = require('mongodb').ObjectId
 const { MongoClient } = require('mongodb');
 const app = express()
 const port = process.env.PORT || 5000
@@ -22,12 +23,17 @@ async function run() {
 
         app.get("/products", async (req, res) => {
             const allProduct = productsCollection.find({})
-            const result = await allProduct.limit(6).toArray()
-            console.log(result)
+            const result = await allProduct.toArray()
             res.send(result)
-
         })
 
+        //get product by id
+
+        app.get('/products/:id', async (req, res) => {
+            const id = req.params.id
+            const result = await productsCollection.find({ _id: ObjectId(id) }).toArray()
+            res.send(result[0])
+        })
         // post api
         app.post('/products', async (req, res) => {
             const products = req.body;
