@@ -18,6 +18,23 @@ async function run() {
         await client.connect()
         const database = client.db('BikerShopDb')
         const productsCollection = database.collection('products')
+        // get all product get api
+
+        app.get("/products", async (req, res) => {
+            const allProduct = productsCollection.find({})
+            const result = await allProduct.limit(6).toArray()
+            console.log(result)
+            res.send(result)
+
+        })
+
+        // post api
+        app.post('/products', async (req, res) => {
+            const products = req.body;
+            const result = await productsCollection.insertOne(products)
+            console.log(result)
+            res.json(result)
+        })
     }
     finally {
         // await client.close()
