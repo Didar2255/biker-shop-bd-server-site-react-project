@@ -50,7 +50,24 @@ async function run() {
             const cursor = ordersCollection.find(query)
             const orders = await cursor.toArray()
             res.json(orders)
+        })
+        // get status api
 
+        app.get('/updateStatus/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const result = await ordersCollection.findOne(query)
+            res.send(result)
+        })
+        // update status api
+        app.put('/updateStatus/:id', async (req, res) => {
+            const id = req.params.id;
+            const newStatus = req.body;
+            const filter = { _id: ObjectId(id) }
+            const updateOrder = { $set: { status: newStatus.status } }
+            const result = await ordersCollection.updateOne(filter, updateOrder)
+            console.log(result)
+            res.json(result)
         })
 
         // post api
@@ -66,6 +83,8 @@ async function run() {
             const result = await ordersCollection.insertOne(order)
             res.json(result)
         })
+
+
 
         // delete Order api
         app.delete('/deleteOrder/:id', async (req, res) => {
