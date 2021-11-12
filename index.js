@@ -21,6 +21,7 @@ async function run() {
         const database = client.db('BikerShopDb')
         const productsCollection = database.collection('products')
         const ordersCollection = database.collection('orders')
+        const usersCollection = database.collection('users')
 
         // get all product get api
         app.get("/products", async (req, res) => {
@@ -66,7 +67,6 @@ async function run() {
             const filter = { _id: ObjectId(id) }
             const updateOrder = { $set: { status: newStatus.status } }
             const result = await ordersCollection.updateOne(filter, updateOrder)
-            console.log(result)
             res.json(result)
         })
 
@@ -81,6 +81,14 @@ async function run() {
         app.post('/orders', async (req, res) => {
             const order = req.body;
             const result = await ordersCollection.insertOne(order)
+            res.json(result)
+        })
+
+        // save user post api
+        app.post('/users', async (req, res) => {
+            const user = req.body;
+            const result = await usersCollection.insertOne(user)
+            console.log(result)
             res.json(result)
         })
 
