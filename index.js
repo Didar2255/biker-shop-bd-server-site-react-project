@@ -90,7 +90,26 @@ async function run() {
             const result = await usersCollection.insertOne(user)
             console.log(result)
             res.json(result)
+        });
+
+        app.put('/users', async (req, res) => {
+            const user = req.body;
+            const filter = { email: user.email }
+            const options = { upsert: true }
+            const updateUser = { $set: user }
+            const result = await usersCollection.updateOne(filter, updateUser, options)
+            res.json(result)
+        });
+
+        // create admin api
+        app.put('/admin', async (req, res) => {
+            const user = req.body;
+            const filter = { email: user.email }
+            const updateUser = { $set: { role: 'admin' } }
+            const result = await usersCollection.updateOne(filter, updateUser)
+            res.json(result)
         })
+
 
         // Delete Order api
         app.delete('/deleteOrder/:id', async (req, res) => {
